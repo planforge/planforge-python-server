@@ -1,0 +1,2 @@
+class PlanForgeApiException(Exception):
+    pass
