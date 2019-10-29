@@ -7,14 +7,13 @@ class Customer:
     @classmethod
     def all(cls):
         api = ApiRequestor()
-        data = api.get('/state')
+        data = api.get('/customers')
 
         all = []
-        # TODO: refactor to a .items() call
-        for id in data:
+        for d in data:
             from planforge import store
-            store.put(id, data[id])
-            all.append(cls(data[id]))
+            store.put(d['id'], d)
+            all.append(cls(d))
 
         return all
 
@@ -26,11 +25,10 @@ class Customer:
         api = ApiRequestor()
         if not data or force:
             try:
-                response = api.get('/state', {'customer': id})
+                data = api.get(f'/customers/{id}')
             except ConnectionError:
                 pass
             else:
-                data = response[id]
                 store.put(id, data)
 
         if not data:
@@ -41,11 +39,15 @@ class Customer:
     def __init__(self, data):
         self.data = data
 
+    def _get_feature(self, key):
+        features = self.data.get('features')
+        if not features:
+            return None
+
+        return next((f for f in features if f['slug'] == key), None)
+
     def feature_enabled(self, key):
-        if (
-            self.data.get('features') and
-            self.data['features'].get(key) and
-            self.data['features'][key].get('enabled')
-        ):
+        feature = self._get_feature(key)
+        if feature and feature['enabled']:
             return True
         return False

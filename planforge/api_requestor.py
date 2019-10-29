@@ -2,6 +2,9 @@ import requests
 from planforge.errors import PlanForgeApiException
 
 class ApiRequestor:
+    # TODO: iterator
+    # TODO: list
+
     def __init__(self):
         from planforge import api_url, api_key
         self.api_url = api_url
