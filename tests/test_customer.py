@@ -5,7 +5,7 @@ import planforge
 from planforge.customer import Customer
 from planforge.stores import MemoryStore
 
-planforge.api_key = "apikey"
+planforge.server_key = "apikey"
 planforge.api_url = "http://localhost:8000/api"
 
 CUSTOMER_DATA = {
