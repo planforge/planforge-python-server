@@ -69,18 +69,18 @@ class TestCustomer:
 
     def test_feature_enabled_returns_true(self):
         customer = Customer(CUSTOMER_DATA)
-        assert customer.feature_enabled("test_feature")
+        assert customer.feature("test_feature").enabled
 
     def test_feature_enabled_returns_false(self):
         data = copy.deepcopy(CUSTOMER_DATA)
         data["features"][0]["enabled"] = False
         customer = Customer(data)
-        assert not customer.feature_enabled("test_feature")
+        assert not customer.feature("test_feature").enabled
 
     def test_feature_enabled_returns_false_if_features_unset(self):
         customer = Customer({})
-        assert not customer.feature_enabled("test_feature")
+        assert not customer.feature("test_feature").enabled
 
     def test_feature_enabled_returns_false_if_key_unset(self):
         customer = Customer({"features": {}})
-        assert not customer.feature_enabled("test_feature")
+        assert not customer.feature("test_feature").enabled

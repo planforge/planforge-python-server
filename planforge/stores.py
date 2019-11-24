@@ -2,8 +2,8 @@ from collections import defaultdict
 
 from .rwlock import RWLock
 
-class MemoryStore:
 
+class MemoryStore:
     def __init__(self):
         self._data = defaultdict(dict)
         self._lock = RWLock()
@@ -26,4 +26,3 @@ class MemoryStore:
         with self._lock.w_locked():
             self._data = defaultdict(dict)
             return True
-
