@@ -1,0 +1,11 @@
+[
+  {
+    "id": "cus_00000000000000",
+    "features": [
+      {
+        "slug": "dope_feature",
+        "enabled": true
+      }
+    ]
+  }
+]

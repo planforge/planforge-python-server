@@ -24,26 +24,6 @@ class TestCustomer:
         planforge.store.clear()
 
     @patch("requests.get")
-    def test_all_stores_data_and_returns(self, get_mock):
-        response_mock = MagicMock()
-        response_mock.status_code = 200
-        response_mock.json.return_value = [
-            mock_data("cus_0000000"),
-            mock_data("cus_0000001"),
-        ]
-        get_mock.return_value = response_mock
-        response = Customer.all()
-        get_mock.assert_called_once_with(
-            "http://localhost:8000/api/customers",
-            params={},
-            headers={"Authorization": "Bearer apikey"},
-        )
-        assert response[0].data == mock_data("cus_0000000")
-        assert response[1].data == mock_data("cus_0000001")
-        assert planforge.store.get("cus_0000000") == mock_data("cus_0000000")
-        assert planforge.store.get("cus_0000001") == mock_data("cus_0000001")
-
-    @patch("requests.get")
     def test_get_stores_data_and_returns(self, get_mock):
         response_mock = MagicMock()
         response_mock.status_code = 200
@@ -84,3 +64,7 @@ class TestCustomer:
     def test_feature_enabled_returns_false_if_key_unset(self):
         customer = Customer({"features": {}})
         assert not customer.feature("test_feature").enabled
+
+    def test_from_file(self):
+        customers = Customer.from_file("tests/customers.json")
+        assert len(customers) == 1

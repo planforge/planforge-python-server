@@ -1,26 +1,12 @@
+import json
+import os
+
 from requests.exceptions import ConnectionError
 
 from planforge.api_requestor import ApiRequestor
 
 
 class Customer:
-    @classmethod
-    def all(cls):
-        # TODO: paginate
-        api = ApiRequestor()
-        data = api.get("/customers")
-
-        all = []
-        for d in data:
-            from planforge import store
-
-            store.put(d["id"], d)
-            all.append(cls(d))
-
-        return all
-
-    # TODO: iter
-
     @classmethod
     def get(cls, id, force=False):
         from planforge import store
@@ -40,6 +26,24 @@ class Customer:
             data = {}
 
         return cls(data)
+
+    @classmethod
+    def from_file(cls, path):
+        abs_path = os.path.join(os.getcwd(), path)
+        with open(abs_path, "r") as json_file:
+            json_string = json_file.read()
+            return cls.from_json(json_string)
+
+    @classmethod
+    def from_json(cls, json_string):
+        from planforge import store
+
+        data = json.loads(json_string)
+        ret = []
+        for d in data:
+            store.put(d["id"], d)
+            ret.append(cls(d))
+        return ret
 
     def __init__(self, data):
         self.data = data
