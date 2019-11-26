@@ -1,7 +1,7 @@
 from .customer import Customer
 from .stores import MemoryStore
 
+api_base = "https://www.planforge.io/api"
 server_key = None
-api_url = "https://www.planforge.io/api"
 store = MemoryStore()
-livemode = False
+streaming_base = "wss://www.planforge.io./rt"

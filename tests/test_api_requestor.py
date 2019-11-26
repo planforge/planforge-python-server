@@ -7,7 +7,7 @@ from planforge.errors import PlanForgeApiException
 from planforge.api_requestor import ApiRequestor
 
 planforge.server_key = "apikey"
-planforge.api_url = "http://localhost:8000/api"
+planforge.api_base = "http://localhost:8000/api"
 
 
 class TestApiRequestor:

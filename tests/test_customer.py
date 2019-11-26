@@ -6,7 +6,7 @@ from planforge.customer import Customer
 from planforge.stores import MemoryStore
 
 planforge.server_key = "apikey"
-planforge.api_url = "http://localhost:8000/api"
+planforge.api_base = "http://localhost:8000/api"
 
 CUSTOMER_DATA = {
     "features": [{"slug": "test_feature", "enabled": True, "name": "Test Feature"}]
