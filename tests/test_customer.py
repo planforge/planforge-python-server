@@ -27,25 +27,23 @@ class TestCustomer:
     def test_get_stores_data_and_returns(self, get_mock):
         response_mock = MagicMock()
         response_mock.status_code = 200
-        response_mock.json.return_value = [
-            mock_data("cus_0000000"),
-        ]
+        response_mock.json.return_value = mock_data("cus_0000000")
         get_mock.return_value = response_mock
-        response = Customer.get("cus_0000000")
+        response = Customer.retrieve("cus_0000000")
         get_mock.assert_called_once_with(
             "http://localhost:8000/api/customers/cus_0000000",
             params={},
-            headers={"Authorization": "Bearer apikey",},
+            headers={"Authorization": "Bearer apikey"},
         )
-        assert response.data == [mock_data("cus_0000000")]
-        assert planforge.store.get("cus_0000000") == [mock_data("cus_0000000")]
+        assert response == mock_data("cus_0000000")
+        assert planforge.store.get("cus_0000000") == mock_data("cus_0000000")
 
     @patch("requests.get")
     def test_get_returns_stored_data_if_api_unreachable(self, get_mock):
         planforge.store.put("cus_0000000", CUSTOMER_DATA)
         get_mock.side_effect = ConnectionError()
-        response = Customer.get("cus_0000000")
-        assert response.data == CUSTOMER_DATA
+        response = Customer.retrieve("cus_0000000")
+        assert response == CUSTOMER_DATA
 
     def test_feature_enabled_returns_true(self):
         customer = Customer(CUSTOMER_DATA)
@@ -62,9 +60,5 @@ class TestCustomer:
         assert not customer.feature("test_feature").enabled
 
     def test_feature_enabled_returns_false_if_key_unset(self):
-        customer = Customer({"features": {}})
+        customer = Customer({"features": []})
         assert not customer.feature("test_feature").enabled
-
-    def test_from_file(self):
-        customers = Customer.from_file("tests/customers.json")
-        assert len(customers) == 1
