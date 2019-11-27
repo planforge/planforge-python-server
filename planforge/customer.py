@@ -8,17 +8,16 @@ from planforge.api_requestor import ApiRequestor
 
 class Customer:
     @classmethod
-    def get(cls, id, force=False):
+    def get(cls, id, api_base=None, server_key=None, force=False):
         from planforge import store
 
         data = store.get(id)
-
-        api = ApiRequestor()
         if not data or force:
             try:
+                api = ApiRequestor(api_base=api_base, server_key=server_key)
                 data = api.get(f"/customers/{id}")
-            except ConnectionError:
-                pass
+            except ConnectionError as e:
+                print(e)
             else:
                 store.put(id, data)
 

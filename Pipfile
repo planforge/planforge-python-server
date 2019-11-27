@@ -10,6 +10,7 @@ black = "*"
 
 [packages]
 requests = "*"
+websockets = "*"
 
 [requires]
 python_version = "3.7"
