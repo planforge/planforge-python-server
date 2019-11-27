@@ -1,3 +1,5 @@
+import json
+
 from .customer import Customer
 from .stores import MemoryStore
 from .streaming import StreamingClient
@@ -21,3 +23,14 @@ def stop_streaming():
     if streaming_client:
         streaming_client.stop()
         streaming_client = None
+
+
+def load_from_file(path):
+    with open(path, "r") as json_file:
+        return load_from_json(json_file.read())
+
+
+def load_from_json(json_str):
+    data = json.loads(json_str)
+    for entry in data:
+        Customer.store(entry)
