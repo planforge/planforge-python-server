@@ -27,20 +27,19 @@ class Customer(PlanForgeObject):
 
         data = store.get(id)
         if not data or force:
-            cls.request(id, api_base=api_base, server_key=server_key)
-        return cls(store.get(id))
+            data = cls.request(
+                f"/customers/{id}", api_base=api_base, server_key=server_key
+            )
+            cls.store(data)
+
+        return cls(data)
 
     @classmethod
-    def request(cls, id, api_base=None, server_key=None):
-        from planforge import store
-
-        api = ApiRequestor(api_base=api_base, server_key=server_key)
-        # TODO: handle exception
-        data = api.get(f"/customers/{id}")
-        cls.store(data)
+    def request(cls, path, api_base=None, server_key=None, **kwargs):
+        return ApiRequestor(api_base=api_base, server_key=server_key).get(path, kwargs)
 
     @classmethod
-    def store(id, data):
+    def store(cls, data):
         from planforge import store
 
         store.put(data["id"], data)

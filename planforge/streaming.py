@@ -24,7 +24,6 @@ class StreamingClient(Thread):
         self.loop = None
 
     async def stream(self):
-        print(self.streaming_endpoint, self.server_key)
         async with websockets.connect(
             self.streaming_endpoint,
             extra_headers={"Authorization": "Bearer " + self.server_key},
@@ -36,6 +35,10 @@ class StreamingClient(Thread):
         from planforge import store
 
         if event["action"] == "put":
+            store.clear()
+            for entry in event["data"]:
+                store.put(entry["id"], entry)
+        elif event["action"] == "patch":
             store.put(event["data"]["id"], event["data"])
-        if event["action"] == "delete":
+        elif event["action"] == "delete":
             store.delete(event["data"]["id"])

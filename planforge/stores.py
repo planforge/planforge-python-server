@@ -8,6 +8,10 @@ class MemoryStore:
         self._data = defaultdict(dict)
         self._lock = RWLock()
 
+    def all(self):
+        with self._lock.r_locked():
+            return list(self._data.values())
+
     def get(self, key):
         with self._lock.r_locked():
             return self._data.get(key)

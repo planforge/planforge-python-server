@@ -1,5 +1,6 @@
 import json
 
+from .api_requestor import ApiRequestor
 from .customer import Customer
 from .stores import MemoryStore
 from .streaming import StreamingClient
@@ -34,3 +35,14 @@ def load_from_json(json_str):
     data = json.loads(json_str)
     for entry in data:
         Customer.store(entry)
+
+
+def get_all_data():
+    api_requestor = ApiRequestor(api_base, server_key)
+    url = api_base + "/customers"
+    while url:
+        data = api_requestor.request(url).json()
+        for entry in data["results"]:
+            Customer.store(entry)
+        url = data["next"]
+    return store.all()
