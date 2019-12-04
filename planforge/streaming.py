@@ -4,7 +4,7 @@ import websockets
 from threading import Thread
 
 import planforge
-from planforge.util import log_info
+from planforge.util import log_debug, log_info
 
 
 class StreamingClient(Thread):
@@ -27,7 +27,21 @@ class StreamingClient(Thread):
         self.loop = None
         log_info("Event stream stopped")
 
-    async def stream(self):
+    async def stream(self, retry_delay=1):
+        while True:
+            try:
+                await self._stream()
+            except (
+                OSError,
+                asyncio.TimeoutError,
+                websockets.exceptions.ConnectionClosedError,
+            ):
+                await asyncio.sleep(retry_delay)
+                log_debug("Websocket connection closed, retrying...")
+                continue
+
+    async def _stream(self):
+        log_debug("Opening websocket connection to %s", self.streaming_endpoint)
         async with websockets.connect(
             self.streaming_endpoint,
             extra_headers={"Authorization": "Bearer " + self.server_key},
