@@ -44,12 +44,47 @@ class Customer(PlanForgeObject):
 
         store.put(data["id"], data)
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self["subscriptions"] = self._build_subscriptions()
+        self["features"] = self._build_features()
+
+    def _build_subscriptions(self):
+        subscriptions = self.get("subscriptions", [])
+        ret = []
+        for subscription in subscriptions:
+            if isinstance(subscription, CustomerSubscription):
+                ret.append(subscription)
+            else:
+                ret.append(CustomerSubscription(subscription))
+        return ret
+
+    def _build_features(self):
+        features = self.get("features", [])
+        ret = []
+        for feature in features:
+            if isinstance(feature, CustomerFeature):
+                ret.append(feature)
+            else:
+                cf = CustomerFeature(feature)
+                if cf.get("subscription") is not None:
+                    cf["subscription"] = self.subscription(cf["subscription"])
+                ret.append(cf)
+        return ret
+
     def feature(self, key):
         features = self.get("features", [])
         for feature in features:
             if feature["slug"] == key:
-                return CustomerFeature(feature)
+                return feature
         return CustomerFeature()
+
+    def subscription(self, key):
+        subscriptions = self.get("subscriptions", [])
+        for subscription in subscriptions:
+            if subscription["id"] == key:
+                return CustomerSubscription(subscription)
+        return None
 
 
 class CustomerFeature(PlanForgeObject):
@@ -60,7 +95,4 @@ class CustomerFeature(PlanForgeObject):
 
 
 class CustomerSubscription(PlanForgeObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        if self.get("enabled") is None:
-            self["enabled"] = False
+    pass
