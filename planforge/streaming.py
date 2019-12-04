@@ -4,6 +4,7 @@ import websockets
 from threading import Thread
 
 import planforge
+from planforge.util import log_info
 
 
 class StreamingClient(Thread):
@@ -14,14 +15,17 @@ class StreamingClient(Thread):
         self.server_key = server_key or planforge.server_key
 
     def run(self):
+        log_info("Starting event stream")
         self.loop = asyncio.new_event_loop()
         self.loop.run_until_complete(self.stream())
 
     def stop(self):
+        log_info("Stopping event stream")
         if self.loop:
             self.loop.stop()
             self.loop.close()
         self.loop = None
+        log_info("Event stream stopped")
 
     async def stream(self):
         async with websockets.connect(

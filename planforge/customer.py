@@ -57,3 +57,10 @@ class CustomerFeature(PlanForgeObject):
         super().__init__(*args, **kwargs)
         if self.get("enabled") is None:
             self["enabled"] = False
+
+
+class CustomerSubscription(PlanForgeObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.get("enabled") is None:
+            self["enabled"] = False

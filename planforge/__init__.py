@@ -10,6 +10,7 @@ server_key = None
 store = MemoryStore()
 streaming_endpoint = "wss://www.planforge.io./rt/client"
 streaming_client = None
+log = None
 
 
 def start_streaming(streaming_client_class=None):
