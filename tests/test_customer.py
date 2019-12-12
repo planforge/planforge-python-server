@@ -9,7 +9,8 @@ planforge.server_key = "apikey"
 planforge.api_base = "http://localhost:8000/api"
 
 CUSTOMER_DATA = {
-    "features": [{"slug": "test_feature", "enabled": True, "name": "Test Feature"}]
+    "features": [{"slug": "test_feature", "enabled": True, "name": "Test Feature"}],
+    "subscriptions": [],
 }
 
 

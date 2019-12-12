@@ -8,7 +8,7 @@ from .streaming import StreamingClient
 api_base = "https://www.planforge.io/api"
 server_key = None
 store = MemoryStore()
-streaming_endpoint = "wss://www.planforge.io./rt/client"
+streaming_endpoint = "wss://www.planforge.io./rt/server"
 streaming_client = None
 log = None
 
