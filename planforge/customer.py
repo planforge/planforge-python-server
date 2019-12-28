@@ -3,6 +3,7 @@ import os
 
 from requests.exceptions import ConnectionError
 
+import planforge
 from planforge.api_requestor import ApiRequestor
 
 
@@ -22,27 +23,12 @@ class PlanForgeObject(dict):
 
 class Customer(PlanForgeObject):
     @classmethod
-    def retrieve(cls, id, api_base=None, server_key=None, force=False):
+    def retrieve(cls, id):
         from planforge import store
 
-        data = store.get(id)
-        if not data or force:
-            data = cls.request(
-                f"/customers/{id}", api_base=api_base, server_key=server_key
-            )
-            cls.store(data)
-
+        key = f"customer:{id}"
+        data = json.loads(store.get(key))
         return cls(data)
-
-    @classmethod
-    def request(cls, path, api_base=None, server_key=None, **kwargs):
-        return ApiRequestor(api_base=api_base, server_key=server_key).get(path, kwargs)
-
-    @classmethod
-    def store(cls, data):
-        from planforge import store
-
-        store.put(data["id"], data)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

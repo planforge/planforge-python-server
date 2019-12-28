@@ -1,11 +1,36 @@
 from collections import defaultdict
 
 from planforge.rwlock import RWLock
+from planforge.replicators import PollingReplicator
 from planforge.util import log_debug
 
 
-class MemoryStore:
-    def __init__(self):
+class BaseStore:
+
+    _replicator = None
+
+    def start(self, replicator_cls=PollingReplicator, replicator_kwargs={}):
+        self._replicator = replicator_cls(self, **replicator_kwargs)
+        self._replicator.start()
+
+    def stop(self):
+        self.teardown()
+
+    def revision(self):
+        return int(self.get("_rev", 0))
+
+    def __del__(self):
+        self.teardown()
+
+    def teardown(self):
+        if self._replicator:
+            self._replicator.stop()
+            self._replicator = None
+
+
+class MemoryStore(BaseStore):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self._data = defaultdict(dict)
         self._lock = RWLock()
 
@@ -14,13 +39,13 @@ class MemoryStore:
         with self._lock.r_locked():
             return list(self._data.values())
 
-    def get(self, key):
+    def get(self, key, default=None):
         log_debug("MemoryStore.get %s", key)
         with self._lock.r_locked():
-            return self._data.get(key)
+            return self._data.get(key, default)
 
-    def put(self, key, data):
-        log_debug("MemoryStore.put %s", key)
+    def set(self, key, data):
+        log_debug("MemoryStore.set %s", key)
         with self._lock.w_locked():
             self._data[key] = data
             return data
