@@ -8,7 +8,15 @@ from planforge.util import log_debug, log_info
 
 
 class PollingReplicator(Thread):
-    def __init__(self, store, interval=1000, page_limit=100, api_base=None, server_key=None, stripe_livemode=None):
+    def __init__(
+        self,
+        store,
+        interval=1000,
+        page_limit=100,
+        api_base=None,
+        server_key=None,
+        stripe_livemode=None,
+    ):
         super().__init__()
         self.daemon = True
         self.store = store
@@ -38,10 +46,10 @@ class PollingReplicator(Thread):
         next_page = True
         while next_page:
             current_revision = self.store.revision()
-            response = self.api_requestor.get("/state/events", {
-                "after_revision": current_revision,
-                "limit": self.page_limit,
-            })
+            response = self.api_requestor.get(
+                "/state/events",
+                {"after_revision": current_revision, "limit": self.page_limit,},
+            )
 
             for event in response["results"]:
                 self.handle_event(event)

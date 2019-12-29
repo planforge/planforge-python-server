@@ -1,5 +1,5 @@
 from contextlib import contextmanager
-from threading  import Lock
+from threading import Lock
 
 
 class RWLock(object):
