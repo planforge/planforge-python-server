@@ -16,14 +16,12 @@ class ApiRequestor:
 
     def request(self, url, params={}):
         log_debug("GET %s", url)
-        response = requests.get(
-            url,
-            params=params,
-            headers={
-                "Authorization": "Bearer " + self.server_key,
-                "Stripe-Livemode": self.stripe_livemode,
-            },
-        )
+
+        headers = {"Authorization": "Bearer " + self.server_key}
+        if self.stripe_livemode:
+            headers["Stripe-Livemode"] = self.stripe_livemode
+
+        response = requests.get(url, params=params, headers=headers,)
 
         if response.status_code > 299:
             raise PlanForgeApiException(response.json())

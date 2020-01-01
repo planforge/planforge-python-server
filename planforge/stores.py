@@ -23,7 +23,11 @@ class BaseStore:
     ):
         if self.revision() == 0:
             self.clear()
-            self.refresh_state(api_base=api_base, server_key=server_key, stripe_livemode=stripe_livemode)
+            self.refresh_state(
+                api_base=api_base,
+                server_key=server_key,
+                stripe_livemode=stripe_livemode,
+            )
 
         self._replicator = replicator_cls(
             self,
