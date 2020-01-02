@@ -12,6 +12,7 @@ class BaseStore:
 
     def __init__(self):
         self._lock = self.lock_cls()
+        self._replicator = None
 
     def start(
         self,
